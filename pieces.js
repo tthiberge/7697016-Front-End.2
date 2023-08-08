@@ -34,3 +34,41 @@ for (let i = 0; i < pieces.length; i++) {
     pieceElement.appendChild(descriptionElement);
     pieceElement.appendChild(stockElement);
 }
+
+const boutonTrier = document.querySelector(".btn-trier");
+boutonTrier.addEventListener("click", function () {
+  const piecesOrdonnees = Array.from(pieces);
+  piecesOrdonnees.sort(function (a, b) {
+      return a.prix - b.prix;
+   });
+   console.log(piecesOrdonnees);
+});
+
+const boutonFiltrer = document.querySelector(".btn-filtrer");
+
+boutonFiltrer.addEventListener("click", function () {
+   const piecesFiltrees = pieces.filter(function (piece) {
+       return piece.prix <= 35;
+   });
+
+   console.log(piecesFiltrees);
+})
+
+
+// Fonctionne
+const btnDecroissant = document.querySelector(".btn-trier-decroissant");
+btnDecroissant.addEventListener("click", function() {
+  const piecesDecroissant = Array.from(pieces);
+  piecesDecroissant.sort(function(a, b) {
+    return b.prix - a.prix;
+  });
+  console.log(piecesDecroissant);
+})
+
+const BtnDescription = document.querySelector(".btn-filtrer-description")
+BtnDescription.addEventListener("click", function () {
+  const piecesFiltreesDescription = pieces.filter(function (piece) {
+    return piece.description // Suffit pour demander si c'est présent, si ça existe
+  })
+  console.log(piecesFiltreesDescription);
+})
