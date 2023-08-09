@@ -142,15 +142,18 @@ document.querySelector('.disponibles').appendChild(pElementDisponible).appendChi
 // Définir un range qui fait le taff et dont je vois la valeur
 const range = document.getElementById("max-price")
 range.value = 60 // Qu'au chargement de la page le curseur soit cohérent avec le fait que toutes les fiches s'affichent
+
+// Pas obligatoire mais pour qu'on voie le prix modifié du range
 const rangePrice = document.createElement('p')
 rangePrice.innerText = `${range.value} €`
 document.querySelector(".filtres").appendChild(rangePrice)
 
-range.addEventListener("change", () => {
+// Ecouter le range pour le côté dynamique
+range.addEventListener("change", () => {  // Lui il a mis à l'event input
   rangePrice.innerText = `${range.value} €`
 
   const piecesPrixMax = pieces.filter(function(piece) {
-    return piece.prix <= range.value
+    return piece.prix <= range.value // Ne pas oublier le return
   })
 
   document.querySelector(".fiches").innerHTML = ""
