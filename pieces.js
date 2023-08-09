@@ -1,3 +1,8 @@
+import { ajoutListenersAvis } from "./avis.js";
+
+
+
+
 // Récupération des pièces depuis le fichier JSON
 const reponse = await fetch('pieces-autos.json');
 const pieces = await reponse.json();
@@ -6,13 +11,10 @@ function genererPieces(pieces){
     for (let i = 0; i < pieces.length; i++) {
 
         const article = pieces[i];
-
         // Récupération de l'élément du DOM qui accueillera les fiches
         const sectionFiches = document.querySelector(".fiches");
-
         // Création d’une balise dédiée à une pièce automobile
         const pieceElement = document.createElement("article");
-
         // Création des balises
         const imageElement = document.createElement("img");
         imageElement.src = article.image;
@@ -26,24 +28,28 @@ function genererPieces(pieces){
         descriptionElement.innerText = article.description ?? "Pas de description pour le moment.";
         const stockElement = document.createElement("p");
         stockElement.innerText = article.disponibilite ? "En stock" : "Rupture de stock";
+        //Code ajouté
+        const avisBouton = document.createElement("button");
+        avisBouton.dataset.id = article.id;
+        avisBouton.textContent = "Afficher les avis";
 
         // On rattache la balise article a la section Fiches
         sectionFiches.appendChild(pieceElement);
-
-        // On rattache l’image à pieceElement (la balise article)
         pieceElement.appendChild(imageElement);
         pieceElement.appendChild(nomElement);
         pieceElement.appendChild(prixElement);
         pieceElement.appendChild(categorieElement);
-
-        //Ajout des éléments au DOM pour l'exercice
         pieceElement.appendChild(descriptionElement);
         pieceElement.appendChild(stockElement);
+        //Code aJouté
+        pieceElement.appendChild(avisBouton);
 
      }
+
+    // Ajout de la fonction ajoutListenersAvis (on les écoute maintenant qu'on les a créés)
+    ajoutListenersAvis();
 }
 
-// J'appelle la fonction une première fois, basée sur la liste complète
 genererPieces(pieces);
 
  //gestion des bouttons
@@ -93,7 +99,7 @@ boutonNoDescription.addEventListener("click", function () {
 const noms = pieces.map(piece => piece.nom);
 for(let i = pieces.length -1 ; i >= 0; i--){
     if(pieces[i].prix > 35){
-        noms.splice(i,1)
+        noms.splice(i,1);
     }
 }
 console.log(noms)
@@ -107,12 +113,12 @@ const abordablesElements = document.createElement('ul');
 for(let i=0; i < noms.length ; i++){
     const nomElement = document.createElement('li');
     nomElement.innerText = noms[i];
-    abordablesElements.appendChild(nomElement)
+    abordablesElements.appendChild(nomElement);
 }
 // Ajout de l'en-tête puis de la liste au bloc résultats filtres
 document.querySelector('.abordables')
     .appendChild(pElement)
-    .appendChild(abordablesElements)
+    .appendChild(abordablesElements);
 
 //Code Exercice
 const nomsDisponibles = pieces.map(piece => piece.nom)
@@ -120,8 +126,8 @@ const prixDisponibles = pieces.map(piece => piece.prix)
 
 for(let i = pieces.length -1 ; i >= 0; i--){
     if(pieces[i].disponibilite === false){
-        nomsDisponibles.splice(i,1)
-        prixDisponibles.splice(i,1)
+        nomsDisponibles.splice(i,1);
+        prixDisponibles.splice(i,1);
     }
 }
 
@@ -130,34 +136,18 @@ const disponiblesElement = document.createElement('ul');
 for(let i=0 ; i < nomsDisponibles.length ; i++){
     const nomElement = document.createElement('li');
     nomElement.innerText = `${nomsDisponibles[i]} - ${prixDisponibles[i]} €`
-    disponiblesElement.appendChild(nomElement)
+    disponiblesElement.appendChild(nomElement);
 }
 
 const pElementDisponible = document.createElement('p')
 pElementDisponible.innerText = "Pièces disponibles:";
 document.querySelector('.disponibles').appendChild(pElementDisponible).appendChild(disponiblesElement)
 
-
-
-// Définir un range qui fait le taff et dont je vois la valeur
-const range = document.getElementById("max-price")
-range.value = 60 // Qu'au chargement de la page le curseur soit cohérent avec le fait que toutes les fiches s'affichent
-
-// Pas obligatoire mais pour qu'on voie le prix modifié du range
-const rangePrice = document.createElement('p')
-rangePrice.innerText = `${range.value} €`
-document.querySelector(".filtres").appendChild(rangePrice)
-
-// Ecouter le range pour le côté dynamique
-range.addEventListener("change", () => {  // Lui il a mis à l'event input
-  rangePrice.innerText = `${range.value} €`
-
-  const piecesPrixMax = pieces.filter(function(piece) {
-    return piece.prix <= range.value // Ne pas oublier le return
-  })
-
-  document.querySelector(".fiches").innerHTML = ""
-  genererPieces(piecesPrixMax)
+const inputPrixMax = document.querySelector('#prix-max')
+inputPrixMax.addEventListener('input', function(){
+    const piecesFiltrees = pieces.filter(function(piece){
+        return piece.prix <= inputPrixMax.value;
+    });
+    document.querySelector(".fiches").innerHTML = "";
+    genererPieces(piecesFiltrees);
 })
-
-// Filtrer au change du range
